@@ -1,0 +1,8 @@
+1. Informacja o tym co loot³o z przeciwnika, musi siê wyœwietlaæ. Bez tego gemeplay loop traci.
+2. Albo stworzyæ system czekania po œmierci np. Minutê 
+3. Aby uzdrowiciel mia³ dodatkow¹ opcjê leczenie do po³owy max_hp gracza za darmo. Leczenie za 10 sztuk z³ota nadal do 100%. Dziêki temu promujemy "grind" bieganie od królików do niego by siê leczyæ za darmo.
+4. Zmieniæ wskaŸnik HP z liczbowego ma graficzny, by by³o widaæ jak ma³o jest HP, wizualnie
+5. Zmieniæ wskaŸnik expa na graficzny, jak hp
+6. Zabicie Króla szczórów powinno umo¿liwiæ np. pochwalenie siê tym uzdrowicielce. Jakaœ wartoœæ tego zabicia musi byæ.
+7. Przeciwnik siê leczy po wycofanie siê z walki, ale dopiero gdy odejdê 1 kratkê od niego, dziêki temu bêdzie mo¿na wyjœæ z walki i siê uleczyæ mikstur¹
+8.Opcja panicznej ucieczki, gwarancja ucieczki ale traci siê ca³y XP z danego lvla

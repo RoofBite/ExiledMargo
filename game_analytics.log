@@ -1,0 +1,328 @@
+2025-08-30 00:11:36,378 - INFO - GAME_SESSION_START
+2025-08-30 00:11:37,480 - INFO - MOVE; Position: (2.5, 1.5); Floor: 0
+2025-08-30 00:11:38,072 - INFO - MOVE; Position: (2.5, 2.5); Floor: 0
+2025-08-30 00:11:38,238 - INFO - MOVE; Position: (2.5, 3.5); Floor: 0
+2025-08-30 00:11:38,419 - INFO - MOVE; Position: (2.5, 4.5); Floor: 0
+2025-08-30 00:11:38,580 - INFO - MOVE; Position: (2.5, 5.5); Floor: 0
+2025-08-30 00:11:38,740 - INFO - MOVE; Position: (2.5, 6.5); Floor: 0
+2025-08-30 00:11:38,898 - INFO - MOVE; Position: (2.5, 7.5); Floor: 0
+2025-08-30 00:11:39,060 - INFO - MOVE; Position: (2.5, 8.5); Floor: 0
+2025-08-30 00:11:39,216 - INFO - MOVE; Position: (2.5, 9.5); Floor: 0
+2025-08-30 00:11:39,370 - INFO - MOVE; Position: (2.5, 10.5); Floor: 0
+2025-08-30 00:11:39,547 - INFO - MOVE; Position: (2.5, 11.5); Floor: 0
+2025-08-30 00:11:39,744 - INFO - MOVE; Position: (2.5, 12.5); Floor: 0
+2025-08-30 00:11:39,901 - INFO - MOVE; Position: (2.5, 13.5); Floor: 0
+2025-08-30 00:11:43,969 - INFO - ITEM_BUY; Item: Siekiera; Cost: 200
+2025-08-30 00:11:44,522 - INFO - ITEM_BUY; Item: Kilof; Cost: 200
+2025-08-30 00:11:46,441 - INFO - MOVE; Position: (2.5, 12.5); Floor: 0
+2025-08-30 00:11:46,603 - INFO - MOVE; Position: (2.5, 11.5); Floor: 0
+2025-08-30 00:11:46,757 - INFO - MOVE; Position: (2.5, 10.5); Floor: 0
+2025-08-30 00:11:46,932 - INFO - MOVE; Position: (2.5, 9.5); Floor: 0
+2025-08-30 00:11:47,085 - INFO - MOVE; Position: (2.5, 8.5); Floor: 0
+2025-08-30 00:11:47,260 - INFO - MOVE; Position: (2.5, 7.5); Floor: 0
+2025-08-30 00:11:47,411 - INFO - MOVE; Position: (2.5, 6.5); Floor: 0
+2025-08-30 00:11:47,565 - INFO - MOVE; Position: (2.5, 5.5); Floor: 0
+2025-08-30 00:11:47,713 - INFO - MOVE; Position: (2.5, 4.5); Floor: 0
+2025-08-30 00:11:47,883 - INFO - MOVE; Position: (2.5, 3.5); Floor: 0
+2025-08-30 00:11:48,499 - INFO - MOVE; Position: (2.5, 2.5); Floor: 0
+2025-08-30 00:11:48,915 - INFO - PORTAL_USE; FromFloor: 0 -> ToFloor: 1; ToPosition: (3, 3)
+2025-08-30 00:11:49,772 - INFO - MOVE; Position: (3.5, 4.5); Floor: 1
+2025-08-30 00:11:49,945 - INFO - MOVE; Position: (3.5, 5.5); Floor: 1
+2025-08-30 00:11:50,102 - INFO - MOVE; Position: (3.5, 6.5); Floor: 1
+2025-08-30 00:11:50,604 - INFO - MOVE; Position: (4.5, 6.5); Floor: 1
+2025-08-30 00:11:50,775 - INFO - MOVE; Position: (5.5, 6.5); Floor: 1
+2025-08-30 00:11:52,557 - INFO - COMBAT_START; Monster: Złoże Kamienia; MonsterHP: 60/60; PlayerHP: 100/100
+2025-08-30 00:11:53,387 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 58/60
+2025-08-30 00:11:53,887 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:11:54,153 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 56/60
+2025-08-30 00:11:54,670 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:11:54,755 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 54/60
+2025-08-30 00:11:55,277 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:11:55,324 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 52/60
+2025-08-30 00:11:55,844 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:11:56,010 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 50/60
+2025-08-30 00:11:56,513 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:11:56,619 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 48/60
+2025-08-30 00:11:57,136 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:11:57,222 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 46/60
+2025-08-30 00:11:57,740 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:11:57,950 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 44/60
+2025-08-30 00:11:58,470 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:11:58,640 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 42/60
+2025-08-30 00:11:59,147 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:11:59,214 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 40/60
+2025-08-30 00:11:59,732 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:11:59,779 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 38/60
+2025-08-30 00:12:00,280 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:00,306 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 36/60
+2025-08-30 00:12:00,827 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:00,893 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 34/60
+2025-08-30 00:12:01,412 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:12:01,581 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 32/60
+2025-08-30 00:12:02,087 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:02,195 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 30/60
+2025-08-30 00:12:02,712 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:02,738 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 28/60
+2025-08-30 00:12:03,256 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:03,345 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 26/60
+2025-08-30 00:12:03,864 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:03,909 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 24/60
+2025-08-30 00:12:04,428 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:04,473 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 22/60
+2025-08-30 00:12:04,990 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:05,177 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 20/60
+2025-08-30 00:12:05,695 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:12:06,035 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 18/60
+2025-08-30 00:12:06,553 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:06,621 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 16/60
+2025-08-30 00:12:07,121 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:12:07,291 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 14/60
+2025-08-30 00:12:07,798 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:07,966 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 12/60
+2025-08-30 00:12:08,483 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:08,550 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 10/60
+2025-08-30 00:12:09,067 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:09,114 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 8/60
+2025-08-30 00:12:09,633 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:09,680 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 6/60
+2025-08-30 00:12:10,200 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:10,266 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 4/60
+2025-08-30 00:12:10,783 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:12:10,955 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 2/60
+2025-08-30 00:12:11,462 - INFO - MONSTER_ATTACK; Attacker: Złoże Kamienia; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:11,589 - INFO - RESOURCE_GATHERING; Target: Złoże Kamienia; Damage: 2; ResourceHP: 0/60
+2025-08-30 00:12:11,589 - INFO - XP_GAIN; Amount: 5; TotalXP: 5/180
+2025-08-30 00:12:11,589 - INFO - COMBAT_END; Outcome: Win; PlayerHP: 100/100
+2025-08-30 00:12:12,692 - INFO - MOVE; Position: (5.5, 5.5); Floor: 1
+2025-08-30 00:12:14,391 - INFO - MOVE; Position: (5.5, 6.5); Floor: 1
+2025-08-30 00:12:14,915 - INFO - MOVE; Position: (4.5, 6.5); Floor: 1
+2025-08-30 00:12:15,156 - INFO - MOVE; Position: (3.5, 6.5); Floor: 1
+2025-08-30 00:12:15,705 - INFO - MOVE; Position: (3.5, 5.5); Floor: 1
+2025-08-30 00:12:15,880 - INFO - MOVE; Position: (3.5, 4.5); Floor: 1
+2025-08-30 00:12:16,045 - INFO - MOVE; Position: (3.5, 3.5); Floor: 1
+2025-08-30 00:12:16,211 - INFO - MOVE; Position: (3.5, 2.5); Floor: 1
+2025-08-30 00:12:16,707 - INFO - MOVE; Position: (4.5, 2.5); Floor: 1
+2025-08-30 00:12:16,885 - INFO - MOVE; Position: (5.5, 2.5); Floor: 1
+2025-08-30 00:12:18,262 - INFO - COMBAT_START; Monster: Drzewo; MonsterHP: 40/40; PlayerHP: 100/100
+2025-08-30 00:12:19,088 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 38/40
+2025-08-30 00:12:19,607 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:19,775 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 36/40
+2025-08-30 00:12:20,294 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:20,321 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 34/40
+2025-08-30 00:12:20,838 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:20,885 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 32/40
+2025-08-30 00:12:21,404 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:21,450 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 30/40
+2025-08-30 00:12:21,965 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:12:22,131 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 28/40
+2025-08-30 00:12:22,633 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:22,801 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 26/40
+2025-08-30 00:12:23,318 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:12:23,489 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 24/40
+2025-08-30 00:12:23,994 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:24,142 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 22/40
+2025-08-30 00:12:24,661 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:24,729 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 20/40
+2025-08-30 00:12:25,247 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:25,293 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 18/40
+2025-08-30 00:12:25,813 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:12:25,981 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 16/40
+2025-08-30 00:12:26,484 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:26,692 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 14/40
+2025-08-30 00:12:27,211 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:27,278 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 12/40
+2025-08-30 00:12:27,796 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:27,925 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 10/40
+2025-08-30 00:12:28,427 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:28,533 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 8/40
+2025-08-30 00:12:29,049 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:29,337 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 6/40
+2025-08-30 00:12:29,853 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:12:30,020 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 4/40
+2025-08-30 00:12:30,539 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:30,647 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 2/40
+2025-08-30 00:12:31,163 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:12:31,291 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 0/40
+2025-08-30 00:12:31,291 - INFO - XP_GAIN; Amount: 5; TotalXP: 10/180
+2025-08-30 00:12:31,291 - INFO - COMBAT_END; Outcome: Win; PlayerHP: 100/100
+2025-08-30 00:12:32,587 - INFO - MOVE; Position: (6.5, 2.5); Floor: 1
+2025-08-30 00:12:33,154 - INFO - MOVE; Position: (7.5, 2.5); Floor: 1
+2025-08-30 00:12:33,357 - INFO - ITEM_PICKUP; Item: Różowa muszelka
+2025-08-30 00:12:33,357 - INFO - MOVE; Position: (8.5, 2.5); Floor: 1
+2025-08-30 00:12:34,157 - INFO - MOVE; Position: (8.5, 3.5); Floor: 1
+2025-08-30 00:12:34,325 - INFO - MOVE; Position: (8.5, 4.5); Floor: 1
+2025-08-30 00:12:35,838 - INFO - MOVE; Position: (8.5, 3.5); Floor: 1
+2025-08-30 00:12:36,001 - INFO - MOVE; Position: (8.5, 2.5); Floor: 1
+2025-08-30 00:12:36,503 - INFO - MOVE; Position: (7.5, 2.5); Floor: 1
+2025-08-30 00:12:36,680 - INFO - MOVE; Position: (6.5, 2.5); Floor: 1
+2025-08-30 00:12:36,852 - INFO - MOVE; Position: (5.5, 2.5); Floor: 1
+2025-08-30 00:12:37,022 - INFO - MOVE; Position: (4.5, 2.5); Floor: 1
+2025-08-30 00:12:40,614 - INFO - MOVE; Position: (3.5, 2.5); Floor: 1
+2025-08-30 00:12:40,771 - INFO - MOVE; Position: (2.5, 2.5); Floor: 1
+2025-08-30 00:12:40,938 - INFO - MOVE; Position: (1.5, 2.5); Floor: 1
+2025-08-30 00:12:40,938 - INFO - FLOOR_CHANGE; NewFloor: 0; Position: (1.5, 2.5)
+2025-08-30 00:12:40,938 - INFO - MOVE after portal; Position: (1.5, 2.5); Floor: 0
+2025-08-30 00:12:41,789 - INFO - MOVE; Position: (1.5, 3.5); Floor: 0
+2025-08-30 00:12:41,961 - INFO - MOVE; Position: (1.5, 4.5); Floor: 0
+2025-08-30 00:12:42,137 - INFO - MOVE; Position: (1.5, 5.5); Floor: 0
+2025-08-30 00:12:42,317 - INFO - MOVE; Position: (1.5, 6.5); Floor: 0
+2025-08-30 00:12:42,476 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:12:42,637 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:12:42,795 - INFO - MOVE; Position: (1.5, 9.5); Floor: 0
+2025-08-30 00:12:42,972 - INFO - MOVE; Position: (1.5, 10.5); Floor: 0
+2025-08-30 00:12:43,145 - INFO - MOVE; Position: (1.5, 11.5); Floor: 0
+2025-08-30 00:12:43,300 - INFO - MOVE; Position: (1.5, 12.5); Floor: 0
+2025-08-30 00:12:49,443 - INFO - MOVE; Position: (2.5, 12.5); Floor: 0
+2025-08-30 00:12:50,044 - INFO - MOVE; Position: (2.5, 11.5); Floor: 0
+2025-08-30 00:12:50,221 - INFO - MOVE; Position: (2.5, 10.5); Floor: 0
+2025-08-30 00:12:50,396 - INFO - MOVE; Position: (2.5, 9.5); Floor: 0
+2025-08-30 00:12:50,553 - INFO - MOVE; Position: (2.5, 8.5); Floor: 0
+2025-08-30 00:12:50,710 - INFO - MOVE; Position: (2.5, 7.5); Floor: 0
+2025-08-30 00:12:55,915 - INFO - MOVE; Position: (2.5, 6.5); Floor: 0
+2025-08-30 00:12:56,081 - INFO - MOVE; Position: (2.5, 5.5); Floor: 0
+2025-08-30 00:12:57,913 - INFO - COMBAT_START; Monster: Drzewo; MonsterHP: 40/40; PlayerHP: 100/100
+2025-08-30 00:12:58,628 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 38/40
+2025-08-30 00:12:59,144 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:12:59,330 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 36/40
+2025-08-30 00:12:59,844 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:13:00,028 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 34/40
+2025-08-30 00:13:00,546 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:00,715 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 32/40
+2025-08-30 00:13:01,232 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:01,420 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 30/40
+2025-08-30 00:13:01,938 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:01,965 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 28/40
+2025-08-30 00:13:02,483 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:13:02,666 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 26/40
+2025-08-30 00:13:03,170 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:03,237 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 24/40
+2025-08-30 00:13:03,753 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:03,799 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 22/40
+2025-08-30 00:13:04,318 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:04,385 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 20/40
+2025-08-30 00:13:04,903 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:05,110 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 18/40
+2025-08-30 00:13:05,627 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:05,673 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 16/40
+2025-08-30 00:13:06,190 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:06,336 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 14/40
+2025-08-30 00:13:06,852 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: True; PlayerHP: 100/100
+2025-08-30 00:13:07,034 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 12/40
+2025-08-30 00:13:07,554 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:07,682 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 10/40
+2025-08-30 00:13:08,201 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:08,287 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 8/40
+2025-08-30 00:13:08,801 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:08,827 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 6/40
+2025-08-30 00:13:09,345 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:09,413 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 4/40
+2025-08-30 00:13:09,930 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:09,956 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 2/40
+2025-08-30 00:13:10,475 - INFO - MONSTER_ATTACK; Attacker: Drzewo; Damage: 0; Crit: False; PlayerHP: 100/100
+2025-08-30 00:13:10,564 - INFO - RESOURCE_GATHERING; Target: Drzewo; Damage: 2; ResourceHP: 0/40
+2025-08-30 00:13:10,564 - INFO - XP_GAIN; Amount: 5; TotalXP: 15/180
+2025-08-30 00:13:10,564 - INFO - COMBAT_END; Outcome: Win; PlayerHP: 100/100
+2025-08-30 00:13:11,609 - INFO - MOVE; Position: (3.5, 5.5); Floor: 0
+2025-08-30 00:13:11,809 - INFO - MOVE; Position: (4.5, 5.5); Floor: 0
+2025-08-30 00:13:11,980 - INFO - MOVE; Position: (5.5, 5.5); Floor: 0
+2025-08-30 00:13:12,153 - INFO - MOVE; Position: (6.5, 5.5); Floor: 0
+2025-08-30 00:13:12,333 - INFO - MOVE; Position: (7.5, 5.5); Floor: 0
+2025-08-30 00:13:12,658 - INFO - MOVE; Position: (6.5, 5.5); Floor: 0
+2025-08-30 00:13:12,900 - INFO - MOVE; Position: (5.5, 5.5); Floor: 0
+2025-08-30 00:13:14,576 - INFO - MOVE; Position: (4.5, 5.5); Floor: 0
+2025-08-30 00:13:14,776 - INFO - MOVE; Position: (3.5, 5.5); Floor: 0
+2025-08-30 00:13:14,944 - INFO - MOVE; Position: (2.5, 5.5); Floor: 0
+2025-08-30 00:13:15,092 - INFO - MOVE; Position: (1.5, 5.5); Floor: 0
+2025-08-30 00:13:16,604 - INFO - MOVE; Position: (1.5, 6.5); Floor: 0
+2025-08-30 00:13:17,085 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:18,371 - INFO - MOVE; Position: (1.5, 6.5); Floor: 0
+2025-08-30 00:13:18,970 - INFO - MOVE; Position: (2.5, 6.5); Floor: 0
+2025-08-30 00:13:19,345 - INFO - MOVE; Position: (3.5, 6.5); Floor: 0
+2025-08-30 00:13:20,158 - INFO - MOVE; Position: (3.5, 5.5); Floor: 0
+2025-08-30 00:13:21,303 - INFO - MOVE; Position: (4.5, 5.5); Floor: 0
+2025-08-30 00:13:21,503 - INFO - MOVE; Position: (5.5, 5.5); Floor: 0
+2025-08-30 00:13:21,673 - INFO - MOVE; Position: (6.5, 5.5); Floor: 0
+2025-08-30 00:13:22,236 - INFO - MOVE; Position: (5.5, 5.5); Floor: 0
+2025-08-30 00:13:22,956 - INFO - MOVE; Position: (6.5, 5.5); Floor: 0
+2025-08-30 00:13:23,562 - INFO - MOVE; Position: (7.5, 5.5); Floor: 0
+2025-08-30 00:13:24,556 - INFO - MOVE; Position: (6.5, 5.5); Floor: 0
+2025-08-30 00:13:24,770 - INFO - MOVE; Position: (5.5, 5.5); Floor: 0
+2025-08-30 00:13:25,162 - INFO - MOVE; Position: (4.5, 5.5); Floor: 0
+2025-08-30 00:13:25,568 - INFO - MOVE; Position: (3.5, 5.5); Floor: 0
+2025-08-30 00:13:26,652 - INFO - MOVE; Position: (3.5, 6.5); Floor: 0
+2025-08-30 00:13:27,378 - INFO - MOVE; Position: (2.5, 6.5); Floor: 0
+2025-08-30 00:13:27,573 - INFO - MOVE; Position: (1.5, 6.5); Floor: 0
+2025-08-30 00:13:28,101 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:28,286 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:28,466 - INFO - MOVE; Position: (1.5, 9.5); Floor: 0
+2025-08-30 00:13:28,661 - INFO - MOVE; Position: (1.5, 10.5); Floor: 0
+2025-08-30 00:13:29,678 - INFO - MOVE; Position: (1.5, 9.5); Floor: 0
+2025-08-30 00:13:29,866 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:30,071 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:30,240 - INFO - MOVE; Position: (1.5, 6.5); Floor: 0
+2025-08-30 00:13:30,388 - INFO - MOVE; Position: (1.5, 5.5); Floor: 0
+2025-08-30 00:13:31,004 - INFO - MOVE; Position: (2.5, 5.5); Floor: 0
+2025-08-30 00:13:31,198 - INFO - MOVE; Position: (3.5, 5.5); Floor: 0
+2025-08-30 00:13:31,389 - INFO - MOVE; Position: (4.5, 5.5); Floor: 0
+2025-08-30 00:13:31,579 - INFO - MOVE; Position: (5.5, 5.5); Floor: 0
+2025-08-30 00:13:31,752 - INFO - MOVE; Position: (6.5, 5.5); Floor: 0
+2025-08-30 00:13:32,077 - INFO - MOVE; Position: (5.5, 5.5); Floor: 0
+2025-08-30 00:13:32,316 - INFO - MOVE; Position: (4.5, 5.5); Floor: 0
+2025-08-30 00:13:32,506 - INFO - MOVE; Position: (3.5, 5.5); Floor: 0
+2025-08-30 00:13:32,674 - INFO - MOVE; Position: (2.5, 5.5); Floor: 0
+2025-08-30 00:13:32,840 - INFO - MOVE; Position: (1.5, 5.5); Floor: 0
+2025-08-30 00:13:33,404 - INFO - MOVE; Position: (1.5, 6.5); Floor: 0
+2025-08-30 00:13:33,587 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:33,762 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:33,938 - INFO - MOVE; Position: (1.5, 9.5); Floor: 0
+2025-08-30 00:13:34,093 - INFO - MOVE; Position: (1.5, 10.5); Floor: 0
+2025-08-30 00:13:34,332 - INFO - MOVE; Position: (1.5, 9.5); Floor: 0
+2025-08-30 00:13:34,526 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:34,722 - INFO - MOVE; Position: (1.5, 9.5); Floor: 0
+2025-08-30 00:13:34,938 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:35,114 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:35,294 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:35,510 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:35,687 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:35,884 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:36,064 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:36,263 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:36,421 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:36,620 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:36,794 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:36,952 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:37,176 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:37,336 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:37,515 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:37,694 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:38,032 - INFO - MOVE; Position: (1.5, 6.5); Floor: 0
+2025-08-30 00:13:38,239 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:38,402 - INFO - MOVE; Position: (1.5, 6.5); Floor: 0
+2025-08-30 00:13:38,561 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:38,819 - INFO - MOVE; Position: (1.5, 6.5); Floor: 0
+2025-08-30 00:13:39,001 - INFO - MOVE; Position: (1.5, 7.5); Floor: 0
+2025-08-30 00:13:39,180 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:39,338 - INFO - MOVE; Position: (1.5, 9.5); Floor: 0
+2025-08-30 00:13:39,576 - INFO - MOVE; Position: (1.5, 10.5); Floor: 0
+2025-08-30 00:13:39,998 - INFO - MOVE; Position: (1.5, 9.5); Floor: 0
+2025-08-30 00:13:40,166 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:40,367 - INFO - MOVE; Position: (1.5, 9.5); Floor: 0
+2025-08-30 00:13:40,542 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:40,739 - INFO - MOVE; Position: (1.5, 9.5); Floor: 0
+2025-08-30 00:13:40,978 - INFO - MOVE; Position: (1.5, 8.5); Floor: 0
+2025-08-30 00:13:41,156 - INFO - MOVE; Position: (1.5, 9.5); Floor: 0
+2025-08-30 00:13:41,354 - INFO - MOVE; Position: (1.5, 10.5); Floor: 0
+2025-08-30 00:13:41,509 - INFO - MOVE; Position: (1.5, 11.5); Floor: 0
+2025-08-30 00:13:41,664 - INFO - MOVE; Position: (1.5, 12.5); Floor: 0
+2025-08-30 00:13:42,418 - INFO - MOVE; Position: (2.5, 12.5); Floor: 0
+2025-08-30 00:13:42,951 - INFO - MOVE; Position: (2.5, 11.5); Floor: 0
+2025-08-30 00:13:43,125 - INFO - MOVE; Position: (2.5, 10.5); Floor: 0
+2025-08-30 00:13:43,324 - INFO - MOVE; Position: (2.5, 9.5); Floor: 0
+2025-08-30 00:13:43,501 - INFO - MOVE; Position: (2.5, 8.5); Floor: 0
+2025-08-30 00:13:43,659 - INFO - MOVE; Position: (2.5, 7.5); Floor: 0
+2025-08-30 00:13:43,875 - INFO - MOVE; Position: (2.5, 6.5); Floor: 0
+2025-08-30 00:13:44,042 - INFO - MOVE; Position: (2.5, 5.5); Floor: 0
+2025-08-30 00:13:44,253 - INFO - MOVE; Position: (2.5, 4.5); Floor: 0
+2025-08-30 00:13:44,418 - INFO - MOVE; Position: (2.5, 3.5); Floor: 0
+2025-08-30 00:13:44,566 - INFO - MOVE; Position: (2.5, 2.5); Floor: 0
+2025-08-30 00:14:10,589 - INFO - GAME_SESSION_END

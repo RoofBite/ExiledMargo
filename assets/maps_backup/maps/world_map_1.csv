@@ -1,0 +1,10 @@
+w,w,w,w,w,w,w,w,w,w
+w,w,,,,,,stone,deer,w
+,st_down_0,,,,,s1,b1,pink_shell,w
+w,w,,,,s1,,rat,,w
+w,,,,"{""id"": 1, ""z"": 0}",deer,,,,w
+w,,,,b1,stone,barell,w,deer,w
+w,,,,,,rat,,w,w
+w,b1,b1,b2,b2,,,rat,,w
+w,,b1,b2,rnd_item,,,,,w
+w,w,w,w,w,w,w,w,w,w
