@@ -30,7 +30,7 @@ if (!window.Terminal) {
             document.getElementsByTagName("head")[0].appendChild(cssref)
     }
 
-    await import(xterm_cdn + "xterm.js")
+    await import(xterm_cdn +\"xterm.js")
     await import(xterm_cdn + "xterm-addon-image.js")
 
 
