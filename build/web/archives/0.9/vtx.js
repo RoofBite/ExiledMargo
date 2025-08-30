@@ -30,8 +30,8 @@ if (!window.Terminal) {
             document.getElementsByTagName("head")[0].appendChild(cssref)
     }
 
-    await import(xterm_cdn +\"xterm.js")
-    await import(xterm_cdn + "xterm-addon-image.js")
+    await import("https://roofbite.github.io/ExiledMargo/build/web/archives/0.9/vt/xterm.js")
+    await import("https://roofbite.github.io/ExiledMargo/build/web/archives/0.9/vt/xterm-addon-image.js")
 
 
 } else {
