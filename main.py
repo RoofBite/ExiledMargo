@@ -23,7 +23,7 @@ HALF_FOV = FOV / 2
 NUM_RAYS = 400
 MAX_DEPTH = 30
 DELTA_ANGLE = FOV / NUM_RAYS
-PIXEL_SKIP = 3
+PIXEL_SKIP = 5
 USE_NUMPY_RENDERER = False
 
 TILE = 60
@@ -38,17 +38,29 @@ def update_graphics_settings(player, renderer):
     Przelicza kluczowe zmienne renderowania na podstawie wartości
     render_scale gracza i aktualizuje powiązane obiekty.
     """
+    # Użyj globalnych zmiennych, które będą modyfikowane
     global RENDER_SCALE, RENDER_WIDTH, RENDER_HEIGHT, DIST, PROJ_COEFF, render_surface
 
+    # Zaktualizuj skalę renderowania na podstawie ustawienia gracza
     RENDER_SCALE = player.render_scale
+    
+    # Przelicz wymiary renderowania
     RENDER_WIDTH = int(SCREEN_WIDTH * RENDER_SCALE)
     RENDER_HEIGHT = int(SCREEN_HEIGHT * RENDER_SCALE)
+    
+    # Przelicz stałe używane w raycastingu
     DIST = RENDER_WIDTH / (2 * math.tan(HALF_FOV))
     PROJ_COEFF = DIST * TILE
 
-    # Odśwież powierzchnię, na której rysuje renderer
+    # Stwórz na nowo główną powierzchnię, na której rysuje renderer
     render_surface = pygame.Surface((RENDER_WIDTH, RENDER_HEIGHT))
+    
+    # Zaktualizuj referencję w rendererze do nowej powierzchni
     renderer.screen = render_surface
+    
+    # Zaktualizuj także powierzchnię roboczą dla podłóg/sufitów
+    renderer.horizontal_line_surface = pygame.Surface((RENDER_WIDTH, 1))
+
 
 
 
@@ -2972,6 +2984,7 @@ class Renderer:
         PLANE_PROPERTIES,
         SPRITE_PROPERTIES,
     ):
+        self.horizontal_line_surface = pygame.Surface((RENDER_WIDTH, 1))
         self.texture_cache = {}
         self.screen = screen
         self.player = player
@@ -3066,37 +3079,44 @@ class Renderer:
         horizon = RENDER_HEIGHT // 2 + int(self.player.pitch * RENDER_SCALE)
         pos_x, pos_y = self.player.x, self.player.y
         dir_x, dir_y = math.cos(self.player.angle), math.sin(self.player.angle)
+        
+        # Oblicz wektory rzutowania raz, przed pętlami
         plane_x = math.cos(self.player.angle + math.pi / 2) * math.tan(HALF_FOV)
         plane_y = math.sin(self.player.angle + math.pi / 2) * math.tan(HALF_FOV)
         left_vec_x, left_vec_y = dir_x - plane_x, dir_y - plane_y
         right_vec_x, right_vec_y = dir_x + plane_x, dir_y + plane_y
+    
+        # Pobierz domyślne ustawienia i siatkę niestandardowych powierzchni
         level_defaults = LEVEL_TEXTURES.get(self.player.floor, {})
-        default_floor_texture = self.HORIZONTAL_SURFACES.get(
-            level_defaults.get("floor")
-        )
-        default_ceil_texture, default_ceil_color = None, None
+        default_floor_texture = self.HORIZONTAL_SURFACES.get(level_defaults.get("floor"))
+        
         ceil_setting = level_defaults.get("ceiling")
-        if isinstance(ceil_setting, str):
-            default_ceil_texture = self.HORIZONTAL_SURFACES.get(ceil_setting)
-        elif isinstance(ceil_setting, tuple):
-            default_ceil_color = ceil_setting
+        default_ceil_texture = self.HORIZONTAL_SURFACES.get(ceil_setting) if isinstance(ceil_setting, str) else None
+        default_ceil_color = ceil_setting if isinstance(ceil_setting, tuple) else None
+    
         custom_grid = self.custom_surfaces_grid.get(self.player.floor)
-        if not custom_grid:
-            return
-
-        grid_h = len(custom_grid)
-        grid_w = len(custom_grid[0]) if grid_h > 0 else 0
+        if not custom_grid: return
+        grid_h, grid_w = len(custom_grid), len(custom_grid[0]) if custom_grid else 0
+    
+        ### --- PĘTLA DLA PODŁOGI --- ###
         for y in range(horizon, RENDER_HEIGHT):
             dist = (self.player.height_in_level * DIST) / (y - horizon + 1e-6)
+            
             start_wx = pos_x + dist * left_vec_x
             start_wy = pos_y + dist * left_vec_y
             end_wx = pos_x + dist * right_vec_x
             end_wy = pos_y + dist * right_vec_y
             step_x = (end_wx - start_wx) / RENDER_WIDTH
             step_y = (end_wy - start_wy) / RENDER_WIDTH
+    
+            line_pixels = pygame.surfarray.pixels2d(self.horizontal_line_surface)
+    
+            ### PĘTLA Z PIXEL_SKIP ###
             for x in range(0, RENDER_WIDTH, PIXEL_SKIP):
                 world_x = start_wx + x * step_x
                 world_y = start_wy + x * step_y
+                
+                # Twoja logika znajdowania właściwej tekstury podłogi
                 map_mx, map_my = int(world_x // TILE), int(world_y // TILE)
                 candidates = []
                 for ny_offset in range(-1, 2):
@@ -3107,34 +3127,35 @@ class Renderer:
                             if cell_data and cell_data.get("floor"):
                                 floor_props = cell_data["floor"]
                                 pad = float(floor_props.get("padding", 0.0))
-                                if (
-                                    nx * TILE - pad * TILE
-                                    <= world_x
-                                    <= (nx + 1) * TILE + pad * TILE
-                                    and ny * TILE - pad * TILE
-                                    <= world_y
-                                    <= (ny + 1) * TILE + pad * TILE
-                                ):
-                                    center_x = nx * TILE + TILE / 2
-                                    center_y = ny * TILE + TILE / 2
-                                    dist_sq = (world_x - center_x) ** 2 + (
-                                        world_y - center_y
-                                    ) ** 2
+                                if (nx * TILE - pad * TILE <= world_x <= (nx + 1) * TILE + pad * TILE and
+                                    ny * TILE - pad * TILE <= world_y <= (ny + 1) * TILE + pad * TILE):
+                                    center_x, center_y = nx * TILE + TILE / 2, ny * TILE + TILE / 2
+                                    dist_sq = (world_x - center_x) ** 2 + (world_y - center_y) ** 2
                                     candidates.append((dist_sq, floor_props))
+                
                 texture_to_use = default_floor_texture
                 if candidates:
                     candidates.sort(key=lambda t: t[0])
-                    closest_props = candidates[0][1]
-                    tex_name = closest_props.get("texture")
+                    tex_name = candidates[0][1].get("texture")
                     custom_tex = self.HORIZONTAL_SURFACES.get(tex_name)
-                    if custom_tex:
-                        texture_to_use = custom_tex
+                    if custom_tex: texture_to_use = custom_tex
+                
+                color_to_fill = (0,0,0) # Domyślny kolor, gdyby tekstura nie istniała
                 if texture_to_use:
                     tex_w, tex_h = texture_to_use.get_size()
                     tex_x = int(world_x / TILE * tex_w) % tex_w
                     tex_y = int(world_y / TILE * tex_h) % tex_h
-                    color = texture_to_use.get_at((tex_x, tex_y))
-                    pygame.draw.rect(self.screen, color, (x, y, PIXEL_SKIP, 1))
+                    color_to_fill = texture_to_use.get_at((tex_x, tex_y))
+                
+                ### WYPEŁNIJ CAŁY SEGMENT ###
+                mapped_color = self.screen.map_rgb(color_to_fill)
+                end_x = min(x + PIXEL_SKIP, RENDER_WIDTH)
+                line_pixels[x:end_x, 0] = mapped_color
+            
+            del line_pixels
+            self.screen.blit(self.horizontal_line_surface, (0, y))
+    
+        ### --- PĘTLA DLA SUFITU --- ###
         for y in range(horizon):
             dist = ((TILE - self.player.height_in_level) * DIST) / (horizon - y + 1e-6)
             start_wx = pos_x + dist * left_vec_x
@@ -3143,29 +3164,44 @@ class Renderer:
             end_wy = pos_y + dist * right_vec_y
             step_x = (end_wx - start_wx) / RENDER_WIDTH
             step_y = (end_wy - start_wy) / RENDER_WIDTH
+    
+            line_pixels = pygame.surfarray.pixels2d(self.horizontal_line_surface)
+    
+            ### PĘTLA Z PIXEL_SKIP ###
             for x in range(0, RENDER_WIDTH, PIXEL_SKIP):
                 world_x = start_wx + x * step_x
                 world_y = start_wy + x * step_y
-                map_mx, map_my = int(world_x // TILE), int(world_y // TILE)
+                
                 texture_to_use = default_ceil_texture
                 color_to_use = default_ceil_color
-                if custom_grid and 0 <= map_my < grid_h and 0 <= map_mx < grid_w:
+                
+                map_mx, map_my = int(world_x // TILE), int(world_y // TILE)
+                if 0 <= map_my < grid_h and 0 <= map_mx < grid_w:
                     cell_data = custom_grid[map_my][map_mx]
                     if cell_data and cell_data.get("ceiling"):
                         tex_name = cell_data["ceiling"].get("texture")
                         custom_tex = self.HORIZONTAL_SURFACES.get(tex_name)
                         if custom_tex:
-                            texture_to_use = custom_tex
-                            color_to_use = None
-
+                            texture_to_use, color_to_use = custom_tex, None
+    
+                mapped_color = 0 # Domyślnie czarny
                 if texture_to_use:
                     tex_w, tex_h = texture_to_use.get_size()
                     tex_x = int(world_x / TILE * tex_w) % tex_w
                     tex_y = int(world_y / TILE * tex_h) % tex_h
                     color = texture_to_use.get_at((tex_x, tex_y))
-                    pygame.draw.rect(self.screen, color, (x, y, PIXEL_SKIP, 1))
+                    mapped_color = self.screen.map_rgb(color)
                 elif color_to_use:
-                    pygame.draw.rect(self.screen, color_to_use, (x, y, PIXEL_SKIP, 1))
+                    mapped_color = self.screen.map_rgb(color_to_use)
+                
+                ### WYPEŁNIJ CAŁY SEGMENT ###
+                end_x = min(x + PIXEL_SKIP, RENDER_WIDTH)
+                line_pixels[x:end_x, 0] = mapped_color
+    
+            del line_pixels
+            self.screen.blit(self.horizontal_line_surface, (0, y))
+    
+
 
     def draw_horizontal_surface_numpy(self, y_start, y_end, is_floor, step=1):
         dir_x, dir_y = math.cos(self.player.angle), math.sin(self.player.angle)
