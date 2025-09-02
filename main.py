@@ -1830,9 +1830,9 @@ def game_loop_step(
         if game_state.current_state == "playing":
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_w:
-                    player.grid_move(True, sprites, game_state, logger, player)
+                    player.grid_move(True, sprites, game_state, logger, player,sprite_grid)
                 if e.key == pygame.K_s:
-                    player.grid_move(False, sprites, game_state, logger, player)
+                    player.grid_move(False, sprites, game_state, logger, player,sprite_grid)
                 if e.key == pygame.K_a:
                     player.turn(True, game_state)
                 if e.key == pygame.K_d:
@@ -1847,11 +1847,11 @@ def game_loop_step(
                     game_state.screen_dirty = True
             if e.type == pygame.MOUSEBUTTONDOWN:
                 if up_rect.collidepoint(mx, my):
-                    player.grid_move(True, sprites, game_state, logger, player)
+                    player.grid_move(True, sprites, game_state, logger, player, sprite_grid)
                 elif right_rect.collidepoint(mx, my):
                     player.turn(False, game_state)
                 elif down_rect.collidepoint(mx, my):
-                    player.grid_move(False, sprites, game_state, logger, player)
+                    player.grid_move(False, sprites, game_state, logger, player,sprite_grid)
                 elif left_rect.collidepoint(mx, my):
                     player.turn(True, game_state)
                 elif interact_rect.collidepoint(mx, my):
@@ -2504,7 +2504,8 @@ async def main():
                 logger,
                 rain_manager,
                 day_night_manager,
-                weather_manager, # <-- DODAJ TĘ LINIĘ
+                weather_manager, 
+                sprite_grid# <-- DODAJ TĘ LINIĘ
             )
         except Exception as e:
             print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
