@@ -23,7 +23,9 @@ HALF_FOV = FOV / 2
 NUM_RAYS = 400
 MAX_DEPTH = 30
 DELTA_ANGLE = FOV / NUM_RAYS
-PIXEL_SKIP = 5
+
+PIXEL_SKIP = 2
+
 USE_NUMPY_RENDERER = False
 
 TILE = 60
@@ -1810,6 +1812,53 @@ class GameState:
         self.active_npc = None
         self.screen_dirty = True
 
+
+def bake_floor_map(world_map, plane_properties, tile_size):
+    """
+    Wykonuje jednorazowo wszystkie ciężkie obliczenia dla niestandardowych podłóg.
+    Zwraca siatkę, gdzie każda komórka zawiera ID tekstury do użycia.
+    """
+    map_height_tiles = len(world_map)
+    map_width_tiles = len(world_map[0])
+    
+    # Tworzymy siatkę o rozdzielczości 1 punkt na 1 piksel świata gry
+    baked_map = [[None for _ in range(map_width_tiles * tile_size)] for _ in range(map_height_tiles * tile_size)]
+    
+    print(f"INFO: Rozpoczynam 'pieczenie' mapy podłóg o wymiarach {map_width_tiles}x{map_height_tiles}...")
+
+    # Przechodzimy przez każdy "piksel" świata gry
+    for wy in range(map_height_tiles * tile_size):
+        for wx in range(map_width_tiles * tile_size):
+            map_mx, map_my = wx // tile_size, wy // tile_size
+            
+            # --- TUTAJ WKLEJONA JEST TWOJA ORYGINALNA, POWOLNA LOGIKA ---
+            candidates = []
+            for ny_offset in range(-1, 2):
+                for nx_offset in range(-1, 2):
+                    nx, ny = map_mx + nx_offset, map_my + ny_offset
+                    if 0 <= ny < map_height_tiles and 0 <= nx < map_width_tiles:
+                        cell_data = world_map[ny][nx]
+                        for item in cell_data:
+                            item_id = item.get("id")
+                            if item_id in plane_properties and plane_properties[item_id].get("type") == "floor":
+                                pad = float(item.get("padding", plane_properties[item_id].get("padding", 0.0)))
+                                if (nx * tile_size - pad * tile_size <= wx <= (nx + 1) * tile_size + pad * tile_size and
+                                    ny * tile_size - pad * tile_size <= wy <= (ny + 1) * tile_size + pad * tile_size):
+                                    center_x, center_y = nx * tile_size + tile_size / 2, ny * tile_size + tile_size / 2
+                                    dist_sq = (wx - center_x) ** 2 + (wy - center_y) ** 2
+                                    candidates.append((dist_sq, item_id))
+            
+            if candidates:
+                candidates.sort(key=lambda t: t[0])
+                # Zapisujemy w naszej "upieczonej" mapie tylko ID najlepszego kandydata
+                baked_map[wy][wx] = candidates[0][1]
+
+    print("INFO: Pieczenie zakończone.")
+    return baked_map
+
+
+
+
 def game_loop_step(
     player,
     game_state,
@@ -2415,43 +2464,41 @@ async def main():
     horizontal_files = {"grass.png", "wall17.png"}
     HORIZONTAL_SURFACES = {}
 
-    if USE_NUMPY_RENDERER:
-        import numpy as np
-        print("INFO: Używam szybkiego renderera NumPy.")
-        for filename in horizontal_files:
-            try:
-                path = os.path.join(TEXTURE_PATH, filename)
-                tex_raw = pygame.image.load(path).convert()
-                HORIZONTAL_SURFACES[filename] = pygame.surfarray.array3d(tex_raw).transpose(1, 0, 2)
-            except (pygame.error, FileNotFoundError):
-                print(f"BŁĄD: Nie można załadować tekstury poziomej: {filename}")
-                placeholder = np.full((TILE, TILE, 3), (255, 0, 255), dtype=np.uint8)
-                HORIZONTAL_SURFACES[filename] = placeholder
-    else:
-        print("INFO: Używam kompatybilnego renderera Pygame.")
-        for filename in horizontal_files:
-            try:
-                path = os.path.join(TEXTURE_PATH, filename)
-                HORIZONTAL_SURFACES[filename] = pygame.image.load(path).convert()
-            except (pygame.error, FileNotFoundError):
-                print(f"BŁĄD: Nie można załadować tekstury poziomej: {filename}")
-                placeholder = pygame.Surface((TILE, TILE))
-                placeholder.fill((255, 0, 255))
-                HORIZONTAL_SURFACES[filename] = placeholder
+    # UWAGA: Ten blok `if/else` nie jest już potrzebny, bo pieczenie działa tylko w trybie Pygame.
+    # Upraszczamy go, aby ładował tylko powierzchnie Pygame.
+    print("INFO: Używam kompatybilnego renderera Pygame.")
+    for filename in horizontal_files:
+        try:
+            path = os.path.join(TEXTURE_PATH, filename)
+            HORIZONTAL_SURFACES[filename] = pygame.image.load(path).convert()
+        except (pygame.error, FileNotFoundError):
+            print(f"BŁĄD: Nie można załadować tekstury poziomej: {filename}")
+            placeholder = pygame.Surface((TILE, TILE))
+            placeholder.fill((255, 0, 255))
+            HORIZONTAL_SURFACES[filename] = placeholder
 
-    # --- POPRAWIONA KOLEJNOŚĆ ---
+    # === KROK 1: ŁADUJEMY CZCIONKI WCZEŚNIEJ ===
+    try:
+        font = pygame.font.Font(FONT_PATH, 50)
+        ui_font = pygame.font.Font(FONT_PATH, 38)
+        info_font = pygame.font.Font(FONT_PATH, 25)
+    except FileNotFoundError:
+        print(f"Błąd: Nie znaleziono pliku czcionki w '{FONT_PATH}'. Używam czcionki domyślnej.")
+        font = pygame.font.Font(None, 60)
+        ui_font = pygame.font.Font(None, 46)
+        info_font = pygame.font.Font(None, 36)
 
-    # 1. Stwórz pustą listę sprajtów
+    # === KROK 2: WYŚWIETLANIE EKRANU ŁADOWANIA ===
+    screen.fill((10, 10, 20)) # Ciemne tło
+    draw_text(screen, "Exiled Margo", (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100), font, center=True)
+    pygame.display.flip() # Pokaż ekran ładowania
+
+    # Stwórz pustą listę sprajtów
     sprites = []
     
-    # 2. Wypełnij listę sprajtów danymi z map
+    # Wypełnij listę sprajtów danymi z WSZYSTKICH map
     for fl, wm in MAPS.items():
-        print("INFO: Tworzenie siatki przestrzennej dla sprajtów...")
-        sprite_grid = SpriteGrid(cell_size=TILE)
-        for spr in sprites:
-            sprite_grid.add(spr)
-        print(f"INFO: Siatka stworzona. {len(sprites)} sprajtów w {len(sprite_grid.grid)} komórkach.")
-        
+        if not (wm and wm[0]): continue
         for ry, row in enumerate(wm):
             for rx, vals in enumerate(row):
                 leftover = []
@@ -2474,14 +2521,37 @@ async def main():
                         leftover.append(v)
                 wm[ry][rx] = leftover
 
-    # 3. Teraz stwórz gracza i renderer
-    player = Player(MAPS, WALLS)
-    renderer = Renderer(None, player, MAPS, WALLS, sprites, HORIZONTAL_SURFACES, PLANE_PROPERTIES, SPRITE_PROPERTIES)
+    # Stwórz siatkę przestrzenną
+    sprite_grid = SpriteGrid(cell_size=TILE)
+    for spr in sprites:
+        sprite_grid.add(spr)
 
-    # 4. Na koniec wywołaj funkcję ustawiającą grafikę
+    # "Upiecz" mapy podłóg, WYŚWIETLAJĄC POSTĘP
+    BAKED_FLOOR_MAPS = {}
+    for i, (floor_id, world_map) in enumerate(MAPS.items()):
+        if world_map and world_map[0]:
+            # Narysuj informację o wczytywanej mapie
+            loading_text = f"Przygotowywanie piętra: {floor_id} ({i+1}/{len(MAPS)})"
+            # Wyczyść stary tekst i narysuj nowy
+            pygame.draw.rect(screen, (10, 10, 20), (0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, 100))
+            draw_text(screen, loading_text, (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), ui_font, center=True)
+            pygame.display.flip()
+            await asyncio.sleep(0) # Kluczowe dla pygbag, pozwala odświeżyć ekran
+            
+            # Wykonaj kosztowne "pieczenie"
+            BAKED_FLOOR_MAPS[floor_id] = bake_floor_map(world_map, PLANE_PROPERTIES, TILE)
+
+    # Stwórz gracza i renderer
+    player = Player(MAPS, WALLS)
+    renderer = Renderer(None, player, MAPS, WALLS, sprites, HORIZONTAL_SURFACES, 
+                        PLANE_PROPERTIES, SPRITE_PROPERTIES, BAKED_FLOOR_MAPS)
+
+    # Wywołaj funkcję ustawiającą grafikę
     update_graphics_settings(player, renderer)
     
     game_state = GameState()
+
+
 
     try:
         font = pygame.font.Font(FONT_PATH, 50)
@@ -2551,7 +2621,7 @@ class Player:
         self.rotation_timer = 0
         self.move_cooldown = 100  # Opóźnienie w milisekundach (100ms = 0.1s)
         self.last_move_time = 0
-        self.render_scale = 0.18
+        self.render_scale = 0.19
 
         # self.ROTATION_COOLDOWN = 0
 
@@ -2983,6 +3053,7 @@ class Renderer:
         HORIZONTAL_TEXTURES,
         PLANE_PROPERTIES,
         SPRITE_PROPERTIES,
+        baked_floor_maps
     ):
         self.horizontal_line_surface = pygame.Surface((RENDER_WIDTH, 1))
         self.texture_cache = {}
@@ -2994,7 +3065,7 @@ class Renderer:
         self.HORIZONTAL_SURFACES = HORIZONTAL_TEXTURES
         self.PLANE_PROPERTIES = PLANE_PROPERTIES
         self.SPRITE_PROPERTIES = SPRITE_PROPERTIES
-
+        self.baked_floor_maps = baked_floor_maps
         self.SOLID_WALLS = {1, 2, 98, 99, 94}
 
         print(
@@ -3080,13 +3151,12 @@ class Renderer:
         pos_x, pos_y = self.player.x, self.player.y
         dir_x, dir_y = math.cos(self.player.angle), math.sin(self.player.angle)
         
-        # Oblicz wektory rzutowania raz, przed pętlami
         plane_x = math.cos(self.player.angle + math.pi / 2) * math.tan(HALF_FOV)
         plane_y = math.sin(self.player.angle + math.pi / 2) * math.tan(HALF_FOV)
         left_vec_x, left_vec_y = dir_x - plane_x, dir_y - plane_y
         right_vec_x, right_vec_y = dir_x + plane_x, dir_y + plane_y
     
-        # Pobierz domyślne ustawienia i siatkę niestandardowych powierzchni
+        # Pobierz domyślne ustawienia
         level_defaults = LEVEL_TEXTURES.get(self.player.floor, {})
         default_floor_texture = self.HORIZONTAL_SURFACES.get(level_defaults.get("floor"))
         
@@ -3094,83 +3164,51 @@ class Renderer:
         default_ceil_texture = self.HORIZONTAL_SURFACES.get(ceil_setting) if isinstance(ceil_setting, str) else None
         default_ceil_color = ceil_setting if isinstance(ceil_setting, tuple) else None
     
+        # Pobierz odpowiednie mapy danych
+        baked_floor_map = self.baked_floor_maps.get(self.player.floor)
         custom_grid = self.custom_surfaces_grid.get(self.player.floor)
         if not custom_grid: return
         grid_h, grid_w = len(custom_grid), len(custom_grid[0]) if custom_grid else 0
     
-        ### --- PĘTLA DLA PODŁOGI --- ###
         for y in range(horizon, RENDER_HEIGHT):
             dist = (self.player.height_in_level * DIST) / (y - horizon + 1e-6)
+            start_wx, start_wy = pos_x + dist * left_vec_x, pos_y + dist * left_vec_y
+            end_wx, end_wy = pos_x + dist * right_vec_x, pos_y + dist * right_vec_y
             
-            start_wx = pos_x + dist * left_vec_x
-            start_wy = pos_y + dist * left_vec_y
-            end_wx = pos_x + dist * right_vec_x
-            end_wy = pos_y + dist * right_vec_y
-            step_x = (end_wx - start_wx) / RENDER_WIDTH
-            step_y = (end_wy - start_wy) / RENDER_WIDTH
-    
-            line_pixels = pygame.surfarray.pixels2d(self.horizontal_line_surface)
-    
-            ### PĘTLA Z PIXEL_SKIP ###
             for x in range(0, RENDER_WIDTH, PIXEL_SKIP):
-                world_x = start_wx + x * step_x
-                world_y = start_wy + x * step_y
-                
-                # Twoja logika znajdowania właściwej tekstury podłogi
-                map_mx, map_my = int(world_x // TILE), int(world_y // TILE)
-                candidates = []
-                for ny_offset in range(-1, 2):
-                    for nx_offset in range(-1, 2):
-                        nx, ny = map_mx + nx_offset, map_my + ny_offset
-                        if 0 <= ny < grid_h and 0 <= nx < grid_w:
-                            cell_data = custom_grid[ny][nx]
-                            if cell_data and cell_data.get("floor"):
-                                floor_props = cell_data["floor"]
-                                pad = float(floor_props.get("padding", 0.0))
-                                if (nx * TILE - pad * TILE <= world_x <= (nx + 1) * TILE + pad * TILE and
-                                    ny * TILE - pad * TILE <= world_y <= (ny + 1) * TILE + pad * TILE):
-                                    center_x, center_y = nx * TILE + TILE / 2, ny * TILE + TILE / 2
-                                    dist_sq = (world_x - center_x) ** 2 + (world_y - center_y) ** 2
-                                    candidates.append((dist_sq, floor_props))
-                
+                t = (x + PIXEL_SKIP / 2) / RENDER_WIDTH
+                world_x = int((1.0 - t) * start_wx + t * end_wx)
+                world_y = int((1.0 - t) * start_wy + t * end_wy)
+    
                 texture_to_use = default_floor_texture
-                if candidates:
-                    candidates.sort(key=lambda t: t[0])
-                    tex_name = candidates[0][1].get("texture")
-                    custom_tex = self.HORIZONTAL_SURFACES.get(tex_name)
-                    if custom_tex: texture_to_use = custom_tex
                 
-                color_to_fill = (0,0,0) # Domyślny kolor, gdyby tekstura nie istniała
+                # Błyskawiczny odczyt z upieczonej mapy
+                if baked_floor_map and 0 <= world_y < len(baked_floor_map) and 0 <= world_x < len(baked_floor_map[0]):
+                    custom_floor_id = baked_floor_map[world_y][world_x]
+                    if custom_floor_id:
+                        tex_name = self.PLANE_PROPERTIES[custom_floor_id].get("texture")
+                        texture_to_use = self.HORIZONTAL_SURFACES.get(tex_name, default_floor_texture)
+    
                 if texture_to_use:
                     tex_w, tex_h = texture_to_use.get_size()
-                    tex_x = int(world_x / TILE * tex_w) % tex_w
-                    tex_y = int(world_y / TILE * tex_h) % tex_h
-                    color_to_fill = texture_to_use.get_at((tex_x, tex_y))
-                
-                ### WYPEŁNIJ CAŁY SEGMENT ###
-                mapped_color = self.screen.map_rgb(color_to_fill)
-                end_x = min(x + PIXEL_SKIP, RENDER_WIDTH)
-                line_pixels[x:end_x, 0] = mapped_color
-            
-            del line_pixels
-            self.screen.blit(self.horizontal_line_surface, (0, y))
+                    color = texture_to_use.get_at((world_x % tex_w, world_y % tex_h))
+                    pygame.draw.rect(self.screen, color, (x, y, PIXEL_SKIP, 1))
+                else:
+                    # Kolor awaryjny, gdyby coś poszło nie tak z teksturą
+                    pygame.draw.rect(self.screen, (255, 0, 255), (x, y, PIXEL_SKIP, 1))
     
-        ### --- PĘTLA DLA SUFITU --- ###
+        # ### --- PĘTLA DLA SUFITU (PRZYWRÓCONA) --- ###
         for y in range(horizon):
             dist = ((TILE - self.player.height_in_level) * DIST) / (horizon - y + 1e-6)
             start_wx = pos_x + dist * left_vec_x
             start_wy = pos_y + dist * left_vec_y
             end_wx = pos_x + dist * right_vec_x
             end_wy = pos_y + dist * right_vec_y
-            step_x = (end_wx - start_wx) / RENDER_WIDTH
-            step_y = (end_wy - start_wy) / RENDER_WIDTH
-    
-            line_pixels = pygame.surfarray.pixels2d(self.horizontal_line_surface)
-    
-            ### PĘTLA Z PIXEL_SKIP ###
+            
             for x in range(0, RENDER_WIDTH, PIXEL_SKIP):
-                world_x = start_wx + x * step_x
-                world_y = start_wy + x * step_y
+                t = (x + PIXEL_SKIP / 2) / RENDER_WIDTH
+                world_x = (1.0 - t) * start_wx + t * end_wx
+                world_y = (1.0 - t) * start_wy + t * end_wy
                 
                 texture_to_use = default_ceil_texture
                 color_to_use = default_ceil_color
@@ -3184,22 +3222,15 @@ class Renderer:
                         if custom_tex:
                             texture_to_use, color_to_use = custom_tex, None
     
-                mapped_color = 0 # Domyślnie czarny
                 if texture_to_use:
                     tex_w, tex_h = texture_to_use.get_size()
                     tex_x = int(world_x / TILE * tex_w) % tex_w
                     tex_y = int(world_y / TILE * tex_h) % tex_h
                     color = texture_to_use.get_at((tex_x, tex_y))
-                    mapped_color = self.screen.map_rgb(color)
+                    pygame.draw.rect(self.screen, color, (x, y, PIXEL_SKIP, 1))
                 elif color_to_use:
-                    mapped_color = self.screen.map_rgb(color_to_use)
-                
-                ### WYPEŁNIJ CAŁY SEGMENT ###
-                end_x = min(x + PIXEL_SKIP, RENDER_WIDTH)
-                line_pixels[x:end_x, 0] = mapped_color
+                    pygame.draw.rect(self.screen, color_to_use, (x, y, PIXEL_SKIP, 1))
     
-            del line_pixels
-            self.screen.blit(self.horizontal_line_surface, (0, y))
     
 
 
