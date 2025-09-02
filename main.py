@@ -3189,20 +3189,24 @@ class Renderer:
             dist_corr = dist * math.cos(gamma)
             sprites_with_depth.append((spr, dist_corr, gamma, theta))
         sprites_with_depth.sort(key=lambda t: t[1], reverse=True)
+
         for spr, dist_corr, gamma, theta in sprites_with_depth:
             if dist_corr < 0.5:
                 continue
+            
             props = self.SPRITE_PROPERTIES.get(spr.id, {})
             is_billboard = props.get("billboard", True)
             proj_h = PROJ_COEFF / (dist_corr + 1e-6) * spr.scale_y
             base_proj_w = PROJ_COEFF / (dist_corr + 1e-6) * spr.scale_x
             proj_w = base_proj_w
+
             if not is_billboard:
                 orientation = props.get("orientation", "x")
                 sprite_plane_angle = math.pi / 2 if orientation == "x" else 0
                 angle_between_view_and_normal = self.player.angle - sprite_plane_angle
                 angle_factor = abs(math.cos(angle_between_view_and_normal))
                 proj_w *= angle_factor
+            
             screen_x = (gamma / HALF_FOV + 1) * (RENDER_WIDTH / 2) - proj_w / 2
             sprite_base_abs_height = spr.floor * TILE + spr.z * TILE
             height_diff = sprite_base_abs_height - self.player.absolute_height
@@ -3214,26 +3218,42 @@ class Renderer:
                 render_half_height + int(self.player.pitch * RENDER_SCALE)
             ) - y_offset_from_horizon
             vert_pos = y_base_on_screen - proj_h
-            if proj_w > 0 and proj_h > 0:
-                try:
-                    scaled_texture = pygame.transform.scale(
-                        spr.texture, (int(proj_w), int(proj_h))
-                    )
-                    for tex_x in range(scaled_texture.get_width()):
-                        current_screen_x = int(screen_x + tex_x)
-                        if 0 <= current_screen_x < RENDER_WIDTH:
-                            ray_idx = int(current_screen_x * NUM_RAYS / RENDER_WIDTH)
-                            if (
-                                0 <= ray_idx < NUM_RAYS
-                                and self.z_buffer[ray_idx] > dist_corr
-                            ):
-                                self.screen.blit(
-                                    scaled_texture,
-                                    (current_screen_x, vert_pos),
-                                    (tex_x, 0, 1, scaled_texture.get_height()),
-                                )
-                except (ValueError, pygame.error):
-                    continue
+
+            proj_w_int = int(proj_w)
+            proj_h_int = int(proj_h)
+
+            scaled_texture = None 
+            
+            if proj_w_int > 0 and proj_h_int > 0:
+                cache_key = (spr.id, proj_w_int, proj_h_int)
+                
+                scaled_texture = self.texture_cache.get(cache_key)
+
+                if scaled_texture is None:
+                    try:
+                        scaled_texture = pygame.transform.scale(
+                            spr.texture, (proj_w_int, proj_h_int)
+                        )
+                        # ...i zapisz wynik w cache'u na przyszłość!
+                        self.texture_cache[cache_key] = scaled_texture
+                    except (ValueError, pygame.error):
+                        continue
+            
+            if scaled_texture is None:
+                continue
+
+            for tex_x in range(scaled_texture.get_width()):
+                current_screen_x = int(screen_x + tex_x)
+                if 0 <= current_screen_x < RENDER_WIDTH:
+                    # Użyj NUM_RAYS zamiast RENDER_WIDTH do indeksowania z_buffer
+                    ray_idx = int(current_screen_x * NUM_RAYS / RENDER_WIDTH)
+                    # Upewnij się, że indeks jest w zakresie
+                    if 0 <= ray_idx < NUM_RAYS and self.z_buffer[ray_idx] > dist_corr:
+                        self.screen.blit(
+                            scaled_texture,
+                            (current_screen_x, vert_pos),
+                            (tex_x, 0, 1, scaled_texture.get_height()),
+                        )
 
     def draw_walls(self):
         self.z_buffer = [float("inf")] * NUM_RAYS
