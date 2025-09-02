@@ -33,25 +33,6 @@ RENDER_SCALE = 0.17
 RENDER_WIDTH = int(SCREEN_WIDTH * RENDER_SCALE)
 RENDER_HEIGHT = int(SCREEN_HEIGHT * RENDER_SCALE)
 
-def update_graphics_settings(player, renderer):
-    """
-    Przelicza kluczowe zmienne renderowania na podstawie wartości
-    render_scale gracza i aktualizuje powiązane obiekty.
-    """
-    global RENDER_SCALE, RENDER_WIDTH, RENDER_HEIGHT, DIST, PROJ_COEFF, render_surface
-
-    RENDER_SCALE = player.render_scale
-    RENDER_WIDTH = int(SCREEN_WIDTH * RENDER_SCALE)
-    RENDER_HEIGHT = int(SCREEN_HEIGHT * RENDER_SCALE)
-    DIST = RENDER_WIDTH / (2 * math.tan(HALF_FOV))
-    PROJ_COEFF = DIST * TILE
-
-    # Odśwież powierzchnię, na której rysuje renderer
-    render_surface = pygame.Surface((RENDER_WIDTH, RENDER_HEIGHT))
-    renderer.screen = render_surface
-
-
-
 DIST = RENDER_WIDTH / (2 * math.tan(HALF_FOV))
 PROJ_COEFF = DIST * TILE
 
@@ -1739,7 +1720,8 @@ def generate_monster_stats(level, archetype="standard"):
     return {"hp": hp, "attack": attack, "defense": defense, "xp_yield": xp_yield}
 
 
-### ZASTĄP CAŁĄ TĘ KLASĘ W SWOIM KODZIE ###
+# --- Klasa do zarządzania stanem gry ---
+# KROK 1: Zastąp swoją starą klasę GameState tą wersją
 class GameState:
     def __init__(self):
         self.screen_shake_intensity = 0
@@ -1760,8 +1742,10 @@ class GameState:
         self.level_up_timer = 0
         self.should_respawn_monsters = False
 
-        # --- DODAJ TĘ LINIĘ ---
-        self.is_dragging_quality_slider = False
+        # --- NOWOŚĆ: Flaga do warunkowego renderowania ---
+        self.screen_dirty = (
+            True  # Zaczynamy z wartością True, aby narysować pierwszą klatkę
+        )
 
     def set_info_message(self, text, duration=2000):
         self.info_message = text
@@ -1774,16 +1758,18 @@ class GameState:
         self.player_turn = True
         self.monster_attack_timer = 0
         self.combat_turn = 0
-        self.screen_dirty = True
+        self.screen_dirty = True  # Zmiana stanu = trzeba przerysować
         logger.info(
             f"COMBAT_START; Monster: {monster.name}; MonsterHP: {monster.hp}/{monster.max_hp}; PlayerHP: {player.hp}/{player.max_hp}"
         )
 
-    def end_combat(self, player, logger, outcome):
+    # W klasie GameState
+    def end_combat(self, player, logger, outcome):  # <-- ZMIEŃ TĘ LINIĘ
         self.current_state = "playing"
         self.active_monster = None
         self.combat_turn = 0
         self.screen_dirty = True
+        # ZMIEŃ LINIĘ LOGOWANIA NA PONIŻSZĄ
         logger.info(
             f"COMBAT_END; Outcome: {outcome}; PlayerHP: {player.hp}/{player.max_hp}"
         )
@@ -1791,12 +1777,13 @@ class GameState:
     def start_dialogue(self, npc):
         self.current_state = "dialogue"
         self.active_npc = npc
-        self.screen_dirty = True
+        self.screen_dirty = True  # Zmiana stanu = trzeba przerysować
 
     def end_dialogue(self):
         self.current_state = "playing"
         self.active_npc = None
-        self.screen_dirty = True
+        self.screen_dirty = True  # Zmiana stanu = trzeba przerysować
+
 
 def game_loop_step(
     player,
@@ -1804,6 +1791,7 @@ def game_loop_step(
     renderer,
     sprites,
     screen,
+    render_surface,
     clock,
     font,
     ui_font,
@@ -1816,7 +1804,8 @@ def game_loop_step(
     day_night_manager,
     weather_manager,
 ):
-    
+    screen.fill((255, 165, 0))  # Pomarańczowy - po aktualizacji logiki
+    pygame.display.flip()
     dt = clock.tick(50)
     mx, my = pygame.mouse.get_pos()
 
@@ -2019,33 +2008,10 @@ def game_loop_step(
             ):
                 game_state.current_state = "playing"
                 game_state.screen_dirty = True
-            
-            equip_rects, inventory_rects, leave_button_rect, slider_area = (
-                draw_character_screen_ui(screen, player, font, ui_font)
-            )
-
-            if e.type == pygame.MOUSEBUTTONDOWN and slider_area.collidepoint(mx, my):
-                game_state.is_dragging_quality_slider = True
-            
-            if e.type == pygame.MOUSEBUTTONUP:
-                game_state.is_dragging_quality_slider = False
-                
-            if game_state.is_dragging_quality_slider and (e.type == pygame.MOUSEMOTION or e.type == pygame.MOUSEBUTTONDOWN):
-                slider_x, slider_width, min_val, max_val = 50, 350, 0.14, 0.28
-                relative_x = max(0, min(slider_width, mx - slider_x))
-                new_scale = min_val + (relative_x / slider_width) * (max_val - min_val)
-                
-                if abs(player.render_scale - new_scale) > 0.001:
-                    player.render_scale = new_scale
-                    # --- KLUCZOWA ZMIANA: Wywołaj nową funkcję ---
-                    update_graphics_settings(player, renderer)
-                    game_state.screen_dirty = True
-            
-            
             if e.type == pygame.MOUSEBUTTONDOWN:
-                equip_rects, inventory_rects, leave_button_rect, slider_area = (
-                draw_character_screen_ui(screen, player, font, ui_font)
-            )
+                equip_rects, inventory_rects, leave_button_rect = (
+                    draw_character_screen_ui(screen, player, font, ui_font)
+                )
                 if leave_button_rect.collidepoint(mx, my):
                     game_state.current_state = "playing"
                     game_state.screen_dirty = True
@@ -2328,11 +2294,12 @@ async def main():
     log_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     log_file = "game_analytics.log"
 
+    # Użyj mode='w', aby log był czyszczony przy każdym uruchomieniu gry
     file_handler = logging.FileHandler(log_file, mode="w")
     file_handler.setFormatter(log_formatter)
 
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.INFO)  # Zapisuj wszystkie zdarzenia od poziomu INFO w górę
     logger.addHandler(file_handler)
 
     logger.info("GAME_SESSION_START")
@@ -2352,9 +2319,15 @@ async def main():
     WALLS = {
         k: pygame.image.load(os.path.join(TEXTURE_PATH, f)).convert()
         for k, f in {
-            1: "wall5.png", 2: "wall2.png", 97: "wall17.png", 94: "wall17.png",
-            95: "wall12.png", 96: "door_closed_wall.png", 10: "stairs_up.png",
-            11: "stairs_down.png", 47: "stairs_down.png",
+            1: "wall5.png",
+            2: "wall2.png",
+            97: "wall17.png",
+            94: "wall17.png",
+            95: "wall12.png",
+            96: "door_closed_wall.png",
+            10: "stairs_up.png",
+            11: "stairs_down.png",
+            47: "stairs_down.png",
         }.items()
     }
     sprite_files = {k: props["texture"] for k, props in SPRITE_PROPERTIES.items()}
@@ -2370,27 +2343,42 @@ async def main():
             placeholder.fill(pygame.Color("magenta"))
             SPRITE_TX[k] = placeholder
     
-    rain_manager = RainManager(num_particles=300, screen_width=SCREEN_WIDTH, screen_height=SCREEN_HEIGHT)
-    snow_manager = SnowManager(num_particles=250, screen_width=SCREEN_WIDTH, screen_height=SCREEN_HEIGHT)
-    weather_manager = WeatherManager(rain_manager, snow_manager, MAPS, WALLS.keys(), PLANE_PROPERTIES)
+    
+    rain_manager = RainManager(
+        num_particles=300, screen_width=SCREEN_WIDTH, screen_height=SCREEN_HEIGHT
+    )
+    snow_manager = SnowManager(
+        num_particles=250, screen_width=SCREEN_WIDTH, screen_height=SCREEN_HEIGHT
+    )
+    weather_manager = WeatherManager(
+        rain_manager, snow_manager, MAPS, WALLS.keys(), PLANE_PROPERTIES
+    )
     day_night_manager = DayNightManager(cycle_duration_seconds=600)
-    day_night_manager.weather_manager = weather_manager
 
+    render_surface = pygame.Surface((RENDER_WIDTH, RENDER_HEIGHT))
     pygame.display.set_caption("Prototyp RPG")
     clock = pygame.time.Clock()
+
+
+    # --- NOWOŚĆ: Bufor na ostatnią poprawnie wyrenderowaną klatkę ---
     last_world_render = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 
     horizontal_files = {"grass.png", "wall17.png"}
+    # Użyjemy jednej, wspólnej nazwy dla obu trybów
     HORIZONTAL_SURFACES = {}
 
     if USE_NUMPY_RENDERER:
         import numpy as np
+
         print("INFO: Używam szybkiego renderera NumPy.")
         for filename in horizontal_files:
             try:
                 path = os.path.join(TEXTURE_PATH, filename)
                 tex_raw = pygame.image.load(path).convert()
-                HORIZONTAL_SURFACES[filename] = pygame.surfarray.array3d(tex_raw).transpose(1, 0, 2)
+                # Konwertujemy na tablicę numpy dla szybkiego renderowania
+                HORIZONTAL_SURFACES[filename] = pygame.surfarray.array3d(
+                    tex_raw
+                ).transpose(1, 0, 2)
             except (pygame.error, FileNotFoundError):
                 print(f"BŁĄD: Nie można załadować tekstury poziomej: {filename}")
                 placeholder = np.full((TILE, TILE, 3), (255, 0, 255), dtype=np.uint8)
@@ -2400,6 +2388,7 @@ async def main():
         for filename in horizontal_files:
             try:
                 path = os.path.join(TEXTURE_PATH, filename)
+                # Po prostu wczytujemy obrazek jako Pygame Surface
                 HORIZONTAL_SURFACES[filename] = pygame.image.load(path).convert()
             except (pygame.error, FileNotFoundError):
                 print(f"BŁĄD: Nie można załadować tekstury poziomej: {filename}")
@@ -2407,42 +2396,64 @@ async def main():
                 placeholder.fill((255, 0, 255))
                 HORIZONTAL_SURFACES[filename] = placeholder
 
-    # --- POPRAWIONA KOLEJNOŚĆ ---
-
-    # 1. Stwórz pustą listę sprajtów
     sprites = []
-    
-    # 2. Wypełnij listę sprajtów danymi z map
     for fl, wm in MAPS.items():
         for ry, row in enumerate(wm):
             for rx, vals in enumerate(row):
                 leftover = []
                 for v in vals:
                     sprite_id = v.get("id")
+
                     if sprite_id in SPRITE_PROPERTIES:
                         final_props = SPRITE_PROPERTIES[sprite_id].copy()
                         final_props.update(v)
-                        if (final_props.get("type") == "monster" and "level" in final_props):
+
+                        # <<< KLUCZOWA ZMIANA TUTAJ >>>
+                        if (
+                            final_props.get("type") == "monster"
+                            and "level" in final_props
+                        ):
                             monster_level = final_props["level"]
                             monster_archetype = final_props.get("archetype", "standard")
-                            generated_stats = generate_monster_stats(monster_level, monster_archetype)
+
+                            # Generujemy statystyki i aktualizujemy słownik
+                            generated_stats = generate_monster_stats(
+                                monster_level, monster_archetype
+                            )
                             final_props.update(generated_stats)
+
+                            # Dodajemy poziom do obiektu, żeby móc go wyświetlić w UI
                             final_props["level"] = monster_level
+
                         tex = SPRITE_TX[sprite_id]
+                        # Przekazujemy zaktualizowane `final_props` do konstruktora Sprite
                         sprites.append(
-                            Sprite((rx + 0.5) * TILE, (ry + 0.5) * TILE, fl, final_props, tex, sprite_id)
+                            Sprite(
+                                (rx + 0.5) * TILE,
+                                (ry + 0.5) * TILE,
+                                fl,
+                                final_props,
+                                tex,
+                                sprite_id,
+                            )
                         )
                     else:
                         leftover.append(v)
                 wm[ry][rx] = leftover
 
-    # 3. Teraz stwórz gracza i renderer
-    player = Player(MAPS, WALLS)
-    renderer = Renderer(None, player, MAPS, WALLS, sprites, HORIZONTAL_SURFACES, PLANE_PROPERTIES, SPRITE_PROPERTIES)
 
-    # 4. Na koniec wywołaj funkcję ustawiającą grafikę
-    update_graphics_settings(player, renderer)
     
+    player = Player(MAPS, WALLS)
+    renderer = Renderer(
+        render_surface,
+        player,
+        MAPS,
+        WALLS,
+        sprites,
+        HORIZONTAL_SURFACES,
+        PLANE_PROPERTIES,
+        SPRITE_PROPERTIES,
+    )
     game_state = GameState()
 
     try:
@@ -2450,24 +2461,27 @@ async def main():
         ui_font = pygame.font.Font(FONT_PATH, 38)
         info_font = pygame.font.Font(FONT_PATH, 25)
     except FileNotFoundError:
-        print(f"Błąd: Nie znaleziono pliku czcionki w '{FONT_PATH}'. Używam czcionki domyślnej.")
+        print(
+            f"Błąd: Nie znaleziono pliku czcionki w '{FONT_PATH}'. Używam czcionki domyślnej."
+        )
         font = pygame.font.Font(None, 60)
         ui_font = pygame.font.Font(None, 46)
         info_font = pygame.font.Font(None, 36)
 
+    
     running = True
     print("--- Przed wejściem do głównej pętli ---")
     
-
     while running:
         try:
-            
+            # Wywołujemy TWOJĄ ORYGINALNĄ, NORMALNĄ funkcję game_loop_step
             running = game_loop_step(
                 player,
                 game_state,
                 renderer,
                 sprites,
                 screen,
+                render_surface,
                 clock,
                 font,
                 ui_font,
@@ -2478,16 +2492,20 @@ async def main():
                 logger,
                 rain_manager,
                 day_night_manager,
-                weather_manager, # <-- DODAJ TĘ LINIĘ
+                weather_manager,
             )
+
         except Exception as e:
+            # JEŚLI WYSTĄPI JAKIKOLWIEK BŁĄD, TEN KOD SIĘ WYKONA
             print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             print(f"KRYTYCZNY BŁĄD ZATRZYMAŁ GRĘ: {e}")
             import traceback
+            # Ta komenda wydrukuje w konsoli DOKŁADNĄ LINIĘ, gdzie wystąpił błąd
             traceback.print_exc() 
             print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            running = False
+            running = False # Zakończ pętlę po błędzie
 
+        # Ta linia jest kluczowa dla pygbag i musi zostać
         await asyncio.sleep(0)
 
     print("Gra zakończona z powodu błędu lub zamknięcia okna.")
@@ -2512,7 +2530,6 @@ class Player:
         self.rotation_timer = 0
         self.move_cooldown = 100  # Opóźnienie w milisekundach (100ms = 0.1s)
         self.last_move_time = 0
-        self.render_scale = 0.18
 
         # self.ROTATION_COOLDOWN = 0
 
@@ -2523,7 +2540,7 @@ class Player:
         self.hp = self.max_hp
         self.base_attack = 2 * 2
         self.base_defense = 1 * 2
-        self.money = 10
+        self.money = 400
         self.moc = 0
         self.max_moc = self.max_hp * 5
         self.inventory = [
@@ -2556,8 +2573,6 @@ class Player:
                 # Używamy .get("defense", 0), aby bezpiecznie dodać bonus do obrony, jeśli istnieje
                 total_defense_bonus += item.get("defense", 0)
         return self.base_defense + total_defense_bonus
-
-    
 
     def add_xp(self, amount, game_state, logger):
         self.xp += amount
@@ -4096,9 +4111,6 @@ def draw_inventory_ui(screen, player, font, ui_font):
     return item_rects
 
 
-
-
-
 ### POPRAWKA: Dodanie przycisku "Zamknij" do Ekranu Postaci ###
 def draw_character_screen_ui(screen, player, font, ui_font):
     s = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -4110,34 +4122,23 @@ def draw_character_screen_ui(screen, player, font, ui_font):
     # 1. Statystyki (lewa strona)
     draw_text(screen, "Statystyki:", (50, 150), ui_font)
     stats = {
-        "Poziom": player.level, "Doświadczenie": f"{player.xp} / {player.xp_to_next_level}",
-        "Życie": f"{player.hp} / {player.max_hp}", "Atak": player.attack,
-        "Obrona": player.defense, "Złoto": player.money,
+        "Poziom": player.level,
+        "Doświadczenie": f"{player.xp} / {player.xp_to_next_level}",
+        "Życie": f"{player.hp} / {player.max_hp}",
+        "Atak": player.attack,
+        "Obrona": player.defense,
+        "Złoto": player.money,
     }
     for i, (name, value) in enumerate(stats.items()):
         draw_text(screen, f"{name}: {value}", (50, 200 + i * 40), ui_font)
 
-    # --- Slider jakości grafiki ---
-    draw_text(screen, "Jakość Grafiki:", (50, 480), ui_font)
-    slider_x, slider_y, slider_width, slider_height = 50, 530, 350, 20
-    slider_rect = pygame.Rect(slider_x, slider_y, slider_width, slider_height)
-    knob_width, knob_height = 30, 40
-    
-    value_range, min_value = 0.28 - 0.14, 0.14
-    current_pos_ratio = (player.render_scale - min_value) / value_range
-    knob_x = slider_x + current_pos_ratio * (slider_width - knob_width)
-    knob_rect = pygame.Rect(knob_x, slider_y - (knob_height - slider_height) / 2, knob_width, knob_height)
-
-    pygame.draw.rect(screen, (80, 80, 80), slider_rect, border_radius=8)
-    pygame.draw.rect(screen, pygame.Color('cyan'), knob_rect, border_radius=8)
-    draw_text(screen, f"{player.render_scale:.2f}", (slider_x + slider_width + 20, slider_y - 10), ui_font)
-    slider_interaction_area = slider_rect.inflate(20, 40)
-
     # 2. Założony ekwipunek (środek)
     draw_text(screen, "Założony ekwipunek:", (SCREEN_WIDTH / 2 - 200, 150), ui_font)
     slot_positions = {
-        "helmet": (SCREEN_WIDTH / 2 - 100, 200), "armor": (SCREEN_WIDTH / 2 - 100, 300),
-        "weapon": (SCREEN_WIDTH / 2 - 270, 300), "shield": (SCREEN_WIDTH / 2 + 70, 300),
+        "helmet": (SCREEN_WIDTH / 2 - 100, 200),
+        "armor": (SCREEN_WIDTH / 2 - 100, 300),
+        "weapon": (SCREEN_WIDTH / 2 - 270, 300),
+        "shield": (SCREEN_WIDTH / 2 + 70, 300),
     }
     equip_rects = {}
     for slot, pos in slot_positions.items():
@@ -4145,34 +4146,76 @@ def draw_character_screen_ui(screen, player, font, ui_font):
         pygame.draw.rect(screen, (80, 80, 80), rect, 2, border_radius=8)
         item = player.equipment.get(slot)
         if item:
-            draw_text(screen, item["name"], rect.center, ui_font, color=pygame.Color("cyan"), center=True)
+            draw_text(
+                screen,
+                item["name"],
+                rect.center,
+                ui_font,
+                color=pygame.Color("cyan"),
+                center=True,
+            )
             equip_rects[slot] = rect
         else:
-            draw_text(screen, f"[{slot.capitalize()}]", rect.center, ui_font, color=(120, 120, 120), center=True)
+            draw_text(
+                screen,
+                f"[{slot.capitalize()}]",
+                rect.center,
+                ui_font,
+                color=(120, 120, 120),
+                center=True,
+            )
 
     # 3. Plecak (prawa strona)
     draw_text(screen, "Plecak:", (SCREEN_WIDTH - 600, 150), ui_font)
     inventory_rects = []
     for i, item in enumerate(player.inventory):
         rect = pygame.Rect(SCREEN_WIDTH - 600, 200 + i * 40, 550, 40)
+
         level_req = item.get("level_req", 1)
-        req_text = f" (Wym. Lvl: {level_req})" if item.get("type") in player.equipment and level_req > 1 else ""
+        req_text = (
+            f" (Wym. Lvl: {level_req})"
+            if item.get("type") in player.equipment and level_req > 1
+            else ""
+        )
         item_text = f"- {item['name']}{req_text}"
+
         can_equip = player.level >= level_req
-        color = "darkred" if item.get("type") in player.equipment and not can_equip else "yellow" if item.get("type") in player.equipment else "lightgreen" if item.get("type") == "consumable" else "white"
-        draw_text(screen, item_text, (rect.x + 10, rect.y + 5), ui_font, color=pygame.Color(color))
+
+        if item.get("type") in player.equipment and not can_equip:
+            color = "darkred"  # Nie można założyć
+        elif item.get("type") in player.equipment:
+            color = "yellow"  # Można założyć
+        elif item.get("type") == "consumable":
+            color = "lightgreen"  # Przedmiot użytkowy
+        else:
+            color = "white"  # Inny łup
+
+        draw_text(
+            screen,
+            item_text,
+            (rect.x + 10, rect.y + 5),
+            ui_font,
+            color=pygame.Color(color),
+        )
         inventory_rects.append(rect)
 
+    # NOWOŚĆ: Przycisk "Zamknij"
     leave_button_rect = pygame.Rect(SCREEN_WIDTH - 350, SCREEN_HEIGHT - 150, 300, 100)
-    pygame.draw.rect(screen, pygame.Color("darkgray"), leave_button_rect, border_radius=12)
+    pygame.draw.rect(
+        screen, pygame.Color("darkgray"), leave_button_rect, border_radius=12
+    )
     draw_text(screen, "Zamknij", leave_button_rect.center, font, center=True)
-    draw_text(screen, "Kliknij przedmiot, by go założyć/zdjąć.", (50, SCREEN_HEIGHT - 100), ui_font)
 
-    # Ta linia jest kluczowa - musi zwracać 4 wartości
-    return equip_rects, inventory_rects, leave_button_rect, slider_interaction_area
+    # Zmiana tekstu pomocy
+    draw_text(
+        screen,
+        "Kliknij przedmiot, by go założyć/zdjąć.",
+        (50, SCREEN_HEIGHT - 100),
+        ui_font,
+    )
 
-
-
+    # Zmiana zwracanych wartości
+    return equip_rects, inventory_rects, leave_button_rect
 
 
 def draw_game_over_ui(screen, font):
