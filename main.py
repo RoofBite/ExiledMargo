@@ -1815,6 +1815,7 @@ def game_loop_step(
     rain_manager,
     day_night_manager,
     weather_manager,
+    sprite_grid
 ):
     
     dt = clock.tick(50)
@@ -2224,7 +2225,26 @@ def game_loop_step(
         # 2. Rysujemy ściany (teraz już bez błędów)
         renderer.draw_walls()
         # 3. Rysujemy sprajty
-        renderer.draw_sprites()
+        # W game_loop_step:
+
+        # --- NOWY KOD: Pobieranie tylko pobliskich sprajtów do renderowania ---
+        # Definiujemy, jak duży obszar wokół gracza nas interesuje. 
+        # Wartość musi być większa niż maksymalny zasięg widzenia.
+        VIEW_RADIUS_TILES = 30 
+        view_radius_pixels = VIEW_RADIUS_TILES * TILE
+
+        # Tworzymy prostokąt (obszar zainteresowania) wokół gracza
+        player_view_rect = pygame.Rect(
+            player.x - view_radius_pixels,
+            player.y - view_radius_pixels,
+            view_radius_pixels * 2,
+            view_radius_pixels * 2
+        )
+
+        # Pobieramy z siatki tylko te sprajty, które są w tym obszarze
+        sprites_to_render = sprite_grid.get_sprites_in_rect(player_view_rect)
+        # --- KONIEC NOWEGO KODU ---
+        renderer.draw_sprites(sprites_to_render)
 
         scaled_render = pygame.transform.scale(
             render_surface, (SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -2414,6 +2434,12 @@ async def main():
     
     # 2. Wypełnij listę sprajtów danymi z map
     for fl, wm in MAPS.items():
+        print("INFO: Tworzenie siatki przestrzennej dla sprajtów...")
+        sprite_grid = SpriteGrid(cell_size=TILE)
+        for spr in sprites:
+            sprite_grid.add(spr)
+        print(f"INFO: Siatka stworzona. {len(sprites)} sprajtów w {len(sprite_grid.grid)} komórkach.")
+        
         for ry, row in enumerate(wm):
             for rx, vals in enumerate(row):
                 leftover = []
@@ -2609,7 +2635,7 @@ class Player:
         self.rotating = True
         game_state.screen_dirty = True
 
-    def grid_move(self, forward, sprites, game_state, logger, player):
+    def grid_move(self, forward, sprites, game_state, logger, player, sprite_grid):
         if self.rotating:
             return
         old_floor = self.floor
@@ -2623,7 +2649,11 @@ class Player:
         if not (0 <= i < len(current_map) and 0 <= j < len(current_map[0])):
             return
 
-        for spr in sprites:
+        # Określ mały obszar do sprawdzenia kolizji (tylko tam, gdzie gracz się rusza)
+        check_rect = pygame.Rect(nx - TILE // 2, ny - TILE // 2, TILE, TILE)
+        nearby_sprites = sprite_grid.get_sprites_in_rect(check_rect)
+
+        for spr in nearby_sprites:
             if spr.floor == self.floor and not spr.is_dead:
                 si, sj = int(spr.y // TILE), int(spr.x // TILE)
                 if (si, sj) == (i, j):
@@ -2850,6 +2880,41 @@ class Player:
             self.equipment[slot] = None
             game_state.set_info_message(f"Zdjęto: {item['name']}")
 
+class SpriteGrid:
+    """Zarządza sprajtami w siatce dla szybkiego dostępu przestrzennego."""
+    def __init__(self, cell_size):
+        self.cell_size = cell_size
+        self.grid = {}  # Słownik przechowujący sprajty: {(cx, cy): [sprite1, sprite2]}
+
+    def _get_cell_coords(self, x, y):
+        """Zwraca koordynaty komórki dla danej pozycji w świecie gry."""
+        return (int(x // self.cell_size), int(y // self.cell_size))
+
+    def add(self, sprite):
+        """Dodaje sprajt do odpowiedniej komórki w siatce."""
+        # Każdy sprajt dodajemy tylko raz, na podstawie jego centralnego punktu
+        key = self._get_cell_coords(sprite.x, sprite.y)
+        if key not in self.grid:
+            self.grid[key] = []
+        self.grid[key].append(sprite)
+
+    def get_sprites_in_rect(self, rect):
+        """Zwraca listę unikalnych sprajtów znajdujących się w danym prostokącie."""
+        sprites_found = set()  # Używamy zbioru, aby uniknąć duplikatów
+        
+        # Oblicz, które komórki siatki pokrywają się z prostokątem
+        start_cx, start_cy = self._get_cell_coords(rect.left, rect.top)
+        end_cx, end_cy = self._get_cell_coords(rect.right, rect.bottom)
+
+        # Przejdź przez wszystkie komórki w zasięgu
+        for cx in range(start_cx, end_cx + 1):
+            for cy in range(start_cy, end_cy + 1):
+                key = (cx, cy)
+                if key in self.grid:
+                    # Dodaj wszystkie sprajty z komórki do naszego zbioru
+                    sprites_found.update(self.grid[key])
+        
+        return list(sprites_found)
 
 class Sprite:
     def __init__(self, x, y, floor, properties, texture, sprite_id):
@@ -3173,9 +3238,9 @@ class Renderer:
                                     ]
             self.pixel_buffer[y, :] = final_color_row
 
-    def draw_sprites(self):
+    def draw_sprites(self, sprites_to_draw):
         sprites_with_depth = []
-        for spr in self.sprites:
+        for spr in sprites_to_draw:
             if spr.is_dead or spr.floor != self.player.floor:
                 continue
             dx, dy = spr.x - self.player.x, spr.y - self.player.y
